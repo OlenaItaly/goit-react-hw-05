@@ -1,35 +1,38 @@
-import { useEffect, useState } from "react";
-// import UserList from "../components/UserList/UserList";
-import { fetchUsers } from "../userService";
+import { useEffect, useState } from "react"
+import { fetchTrendingMovies } from "../useService";
+import MovieList from "../components/MovieList/MovieList";
 
-export default function HomePage() {
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
 
+const HomePage = () => {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   useEffect(() => {
-    async function getUsers() {
+    const fetchMovies = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        setIsLoading(true);
-        setError(false);
-        const data = await fetchUsers();
-        setUsers(data);
-      } catch {
-        setError(true);
+        const data = await fetchTrendingMovies();
+        setMovies(data.results);
+
+      } catch (error) {
+        setError(error)
       } finally {
-        setIsLoading(false);
+        setLoading(false)
       }
     }
+    fetchMovies();
+},[])
 
-    getUsers();
-  }, []);
-
+console.log(movies)
   return (
-    <>
-      {isLoading && <b>Loading users...</b>}
-      {error && <b>Whoops there was an error, plz reload the page...</b>}
-          {/* {users.length > 0 && <UserList users={users} />} */}
-          <p>Home pages OK</p>
-    </>
+    <div>
+      {loading && <p>Loading</p>}
+      {error && <p> Error!</p>}
+      {movies.length > 0 && <MovieList movies={movies}/>}
+    </div>
   );
+
 }
+
+export default HomePage

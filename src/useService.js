@@ -1,8 +1,7 @@
 import axios from "axios";
+axios.defaults.baseURL='https://api.themoviedb.org/3'
 
-const url =
-  "https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1";
-
+ 
 const options = {
   headers: {
     // Замість api_read_access_token вставте свій токен
@@ -11,10 +10,19 @@ const options = {
   },
 };
 
-export const fetchUsers = async () => {
-    const resp = await axios
-        .get(url, options);
-    return resp
+export const fetchTrendingMovies = async () => {
+    const {data} = await axios.get("/trending/movie/day", options);
+    return data
       
         
 }
+
+export const fetchSearchMovies = async (query) => {
+  const { data } = await axios.get(`/search/movie?query=${query}`, options);
+  return data
+}
+
+export const fetchMoviesDetails = async (movieId) => {
+  const { data } = await axios.get(`/movie/${movieId}`, options);
+  return data;
+};
